@@ -1,6 +1,6 @@
 <template>
   <svg class="svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" width="500" height="500">
-    <template v-for="(circle, i) in shapes.circles" @click="toggleOption(circle.id)">
+    <template v-for="circle in shapes.circles" @click="toggleOption(circle.id)">
       <line
         v-for="dependent in circle.dependents"
         :x1="circle.x"
