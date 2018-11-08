@@ -45,11 +45,7 @@ class RuleSet {
     // find any that are on both lists (O = N*M ?)
     // no, we don't care about nodes which aren't in the dependency graph
     for (let node in this.dependents) {
-      const exclusives = []
-      for (let pair of this.exclusivePairs) {
-        if (pair[0] === node) exclusives.push(pair[1])
-        else if (pair[1] === node) exclusives.push(pair[0])
-      }
+      const exclusives = this._exclusives(node)
       if (exclusives.length) {
         if (!this._exclusiveCheck(node, exclusives)) return false
       }
@@ -80,6 +76,16 @@ class RuleSet {
     }
     return true
   }
+
+  /** find all nodes exclusive with this one */
+  _exclusives (node) {
+    const exclusives = []
+    for (let pair of this.exclusivePairs) {
+      if (pair[0] === node) exclusives.push(pair[1])
+      else if (pair[1] === node) exclusives.push(pair[0])
+    }
+    return exclusives
+  }
 }
 
 /* a way to select options for a given set of rules */
@@ -91,8 +97,14 @@ class SelectedOptions {
 
   /** toggle an option and all its descendents */
   toggle (option) {
-    if (this.selected.has(option)) this._unselect(option)
-    else this._select(option)
+    if (this.selected.has(option)) {
+      this._unselect(option)
+    }
+    else {
+      this._select(option)
+      // ensure to unselect any exclusives
+      this.ruleSet._exclusives(option).forEach(v => this._unselect(v))
+    }
     return this // make chainable
   }
 
