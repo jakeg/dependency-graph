@@ -1,8 +1,11 @@
 # Usage
 
 ```bash
+# install dependencies
 npm install
-npm run server
+
+# run in development
+npm run serve
 
 # output build for github pages (/docs is being served)
 npm run build
